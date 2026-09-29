@@ -6,8 +6,9 @@ All notable changes to VulnLens are documented here.
 
 - Add SARIF 2.1.0 output for GitHub Code Scanning.
 - Add fingerprint-based baseline creation and suppression for existing findings.
+- Add opt-in `vulnlens-deps` command to query OSV.dev for exact-pinned Python requirements.
 - Improve GitHub Actions pinning checks to flag references not using full 40-character commit SHAs.
-- Expand tests for SARIF and baseline behavior.
+- Expand tests for SARIF, baselines, and dependency requirement parsing.
 - Expand CI to Python 3.10–3.13 and add a SARIF upload job for pushes and manual runs.
 - Update documentation and publish a development roadmap.
 
