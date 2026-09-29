@@ -60,7 +60,7 @@ def query_osv(packages, timeout=20):
 def main(argv=None):
     parser=argparse.ArgumentParser(description='Audit exact-pinned Python requirements against OSV.dev')
     parser.add_argument('requirements',nargs='?',default='requirements.txt')
-    parser.add_argument('--json',dest='json_file')
+    parser.add_argument('--json',dest='json_file')\n    parser.add_argument('--offline', action='store_true', help='Do not contact OSV; report packages as not audited')
     args=parser.parse_args(argv); path=Path(args.requirements)
     if not path.is_file(): parser.error('requirements file not found: '+str(path))
     packages,skipped=parse_requirements(path)
