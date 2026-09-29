@@ -15,7 +15,7 @@ dependencies = []
 
 [project.scripts]
 vulnlens = 'vulnlens.cli:main'
-vulnlens-deps = 'vulnlens.deps:main'
+vulnlens-deps = 'vulnlens.deps:main'\nvulnlens-benchmark = 'vulnlens.benchmark:main'
 
 [tool.setuptools.packages.find]
 include = ['vulnlens*']
