@@ -28,7 +28,7 @@ def preview(root: str) -> str:
             if re.match(r"^([ \t]*)permissions[ \t]*:[ \t]*write-all[ \t]*(?:#.*)?(?:\r?\n)?$", line, re.I):
                 indent = re.match(r"^([ \t]*)", line).group(1)
                 ending = "\r\n" if line.endswith("\r\n") else "\n" if line.endswith("\n") else ""
-                out.append(indent + "permissions: contents: read  # REVIEW: grant only permissions required by this workflow" + ending)
+                out.append(indent + "permissions:" + ending)\n                out.append(indent + "  contents: read  # REVIEW: grant only permissions required by this workflow" + ending)
                 changed = True
             else:
                 out.append(line)
