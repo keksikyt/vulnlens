@@ -5,7 +5,7 @@ from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 
 ENDPOINT = 'https://api.osv.dev/v1/querybatch'
-PIN = re.compile(r"^\\s*([A-Za-z0-9][A-Za-z0-9._-]*)\\s*==\\s*([A-Za-z0-9][A-Za-z0-9.!+_-]*)\\s*(?:#.*)?$")
+PIN = re.compile(r"^\s*([A-Za-z0-9][A-Za-z0-9._-]*)\s*==\s*([A-Za-z0-9][A-Za-z0-9.!+_-]*)\s*(?:#.*)?$")
 
 def parse_requirements(path):
     packages=[]; skipped=[]
