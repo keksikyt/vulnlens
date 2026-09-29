@@ -35,7 +35,38 @@ vulnlens . --fail-on high
 
 `--fail-on` supports `critical`, `high`, `medium`, `low`, and `never`. Exit status is non-zero when a non-suppressed finding meets the threshold.
 
-## HTML reports\n\nGenerate a self-contained HTML report for local review:\n\n```bash\nvulnlens . --html vulnlens-report.html\n```\n\nThe report escapes scanned text before rendering. Review it before sharing because repository paths and finding details may be sensitive.\n\n## Reuse as a GitHub Action\n\nAfter committing or tagging a reviewed release, consume the composite action from another workflow (replace `main` with a reviewed immutable commit SHA for production):\n\n```yaml\nname: VulnLens\non: [push, pull_request]\npermissions:\n  contents: read\njobs:\n  scan:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: keksikyt/vulnlens@main\n        with:\n          fail-on: high\n```\n\nThe action installs this project from GitHub and creates SARIF and HTML files in the workspace. To upload SARIF to Code Scanning, add GitHub’s SARIF upload action in a separate job with narrowly scoped `security-events: write` permission.\n\n## Baselines
+## HTML reports
+
+Generate a self-contained HTML report for local review:
+
+```bash
+vulnlens . --html vulnlens-report.html
+```
+
+The report escapes scanned text before rendering. Review it before sharing because repository paths and finding details may be sensitive.
+
+## Reuse as a GitHub Action
+
+After committing or tagging a reviewed release, consume the composite action from another workflow (replace `main` with a reviewed immutable commit SHA for production):
+
+```yaml
+name: VulnLens
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: keksikyt/vulnlens@main
+        with:
+          fail-on: high
+```
+
+The action installs this project from GitHub and creates SARIF and HTML files in the workspace. To upload SARIF to Code Scanning, add GitHub’s SARIF upload action in a separate job with narrowly scoped `security-events: write` permission.
+
+## Baselines
 
 Create a baseline of current findings and then fail only on new findings:
 
