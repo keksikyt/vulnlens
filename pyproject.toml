@@ -1,0 +1,18 @@
+[build-system]
+requires = ['setuptools>=68']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'vulnlens'
+version = '0.1.0'
+description = 'Local-first security checks for secrets, Dockerfiles, and GitHub Actions.'
+readme = 'README.md'
+requires-python = '>=3.10'
+license = {file = 'LICENSE'}
+dependencies = []
+
+[project.scripts]
+vulnlens = 'vulnlens.cli:main'
+
+[tool.setuptools.packages.find]
+include = ['vulnlens*']
