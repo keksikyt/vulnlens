@@ -35,7 +35,7 @@ vulnlens . --fail-on high
 
 `--fail-on` supports `critical`, `high`, `medium`, `low`, and `never`. Exit status is non-zero when a non-suppressed finding meets the threshold.
 
-## HTML reports
+## Benchmark, history, and fix preview\n\nRun a deterministic benchmark against synthetic fixtures only:\n\n```bash\nvulnlens-benchmark\nvulnlens-benchmark --json benchmark.json\n```\n\nRecord and inspect local scan history (JSONL; stored locally, no network):\n\n```bash\nvulnlens-history .\nvulnlens-history --list\n```\n\nPreview a conservative patch for explicit `permissions: write-all` workflow settings. This prints a unified diff and never edits files; review permissions carefully because workflows may need additional scopes:\n\n```bash\nvulnlens-fix-preview . --output proposed.patch\n```\n\nDependency audit with no network request (does not assess vulnerability status):\n\n```bash\nvulnlens-deps requirements.txt --offline\n```\n\n## HTML reports
 
 Generate a self-contained HTML report for local review:
 
