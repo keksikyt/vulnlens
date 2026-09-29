@@ -104,6 +104,26 @@ class ScannerTests(unittest.TestCase):
             (root / "linked.py").symlink_to(secret_file)
             self.assertEqual(scan(root)["summary"]["total"], 0)
 
+    def test_workflow_scanner_skips_symlinked_files(self):
+        with tempfile.TemporaryDirectory() as d, tempfile.TemporaryDirectory() as outside:
+            root = Path(d)
+            workflows = root / ".github" / "workflows"
+            workflows.mkdir(parents=True)
+            external = Path(outside) / "workflow.yml"
+            external.write_text("steps:\\n  - uses: actions/checkout@v4\\n")
+            (workflows / "linked.yml").symlink_to(external)
+            self.assertFalse(any(x["rule"] == "VL201" for x in scan(root)["findings"]))
+
+    def test_workflow_scanner_skips_oversized_files(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            workflows = root / ".github" / "workflows"
+            workflows.mkdir(parents=True)
+            (workflows / "large.yml").write_text(
+                "steps:\\n  - uses: actions/checkout@v4\\n" + ("#" * 1_000_001)
+            )
+            self.assertFalse(any(x["rule"] == "VL201" for x in scan(root)["findings"]))
+
 
 if __name__ == "__main__":
     unittest.main()
