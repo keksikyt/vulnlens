@@ -140,6 +140,7 @@ def main(argv=None):
     parser.add_argument("path", nargs="?", default=".")
     parser.add_argument("--json", dest="json_file", metavar="FILE", help="Write JSON report")
     parser.add_argument("--sarif", metavar="FILE", help="Write SARIF 2.1.0 report for GitHub Code Scanning")
+    parser.add_argument("--html", metavar="FILE", help="Write a self-contained HTML report")
     parser.add_argument("--write-baseline", metavar="FILE", help="Save current finding fingerprints as a baseline")
     parser.add_argument("--baseline", metavar="FILE", help="Suppress findings already present in a baseline")
     parser.add_argument("--fail-on", choices=["critical", "high", "medium", "low", "never"], default="never")
