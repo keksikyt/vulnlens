@@ -1,0 +1,48 @@
+name: Bug report
+description: Report a reproducible problem in VulnLens
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: "Please do not include real secrets, private code, or sensitive scan results. For security vulnerabilities in VulnLens, use the private reporting process in SECURITY.md."
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the unexpected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include minimal commands and synthetic input where possible.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: VulnLens version
+      placeholder: "e.g. 0.1.0 or commit SHA"
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python version and operating system
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant output (redacted)
+      description: Remove tokens, credentials, private paths, and sensitive data.
+    validations:
+      required: false
