@@ -78,9 +78,14 @@ def scan(root):
     workflow_dir = root / ".github" / "workflows"
     if workflow_dir.is_dir():
         for path in workflow_dir.rglob("*"):
-            if not path.is_file() or path.suffix.lower() not in {".yml", ".yaml"}:
+            # Workflow files are untrusted input too: do not follow symlinks or
+            # read oversized files (the same limit used by the source scanner).
+            if (path.is_symlink() or not path.is_file()
+                    or path.suffix.lower() not in {".yml", ".yaml"}):
                 continue
             try:
+                if path.stat().st_size > MAX_BYTES:
+                    continue
                 lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
             except OSError:
                 continue
