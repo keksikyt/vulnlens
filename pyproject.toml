@@ -9,12 +9,13 @@ description = 'Local-first security checks for secrets, Dockerfiles, and GitHub 
 readme = 'README.md'
 requires-python = '>=3.10'
 license = {file = 'LICENSE'}
-keywords = ['security', 'devsecops', 'appsec', 'secret-scanning', 'sarif']
+keywords = ['security', 'devsecops', 'appsec', 'secret-scanning', 'sarif', 'osv']
 classifiers = ['Development Status :: 3 - Alpha', 'Environment :: Console', 'Programming Language :: Python :: 3', 'Topic :: Security']
 dependencies = []
 
 [project.scripts]
 vulnlens = 'vulnlens.cli:main'
+vulnlens-deps = 'vulnlens.deps:main'
 
 [tool.setuptools.packages.find]
 include = ['vulnlens*']
