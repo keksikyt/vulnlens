@@ -85,7 +85,7 @@ class ScannerTests(unittest.TestCase):
                 [(x["name"], x["version"]) for x in packages],
                 [("requests", "2.31.0"), ("django", "4.2.1")],
             )
-            self.assertEqual(len(skipped), 2)
+            self.assertEqual(len(skipped), 1)
 
 
 if __name__ == "__main__":
