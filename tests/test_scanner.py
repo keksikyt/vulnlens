@@ -124,6 +124,24 @@ class ScannerTests(unittest.TestCase):
             )
             self.assertFalse(any(x["rule"] == "VL201" for x in scan(root)["findings"]))
 
+    def test_osv_rejects_incomplete_batch_response(self):
+        from unittest.mock import patch, MagicMock
+        from vulnlens.deps import query_osv
+        response = MagicMock()
+        response.__enter__.return_value.read.return_value = b'{"results":[]}'
+        with patch("vulnlens.deps.urlopen", return_value=response):
+            with self.assertRaisesRegex(RuntimeError, "incomplete"):
+                query_osv([{"name": "demo", "version": "1.0", "line": 1}])
+
+    def test_osv_rejects_invalid_response_shape(self):
+        from unittest.mock import patch, MagicMock
+        from vulnlens.deps import query_osv
+        response = MagicMock()
+        response.__enter__.return_value.read.return_value = b'[]'
+        with patch("vulnlens.deps.urlopen", return_value=response):
+            with self.assertRaisesRegex(RuntimeError, "invalid response shape"):
+                query_osv([{"name": "demo", "version": "1.0", "line": 1}])
+
 
 if __name__ == "__main__":
     unittest.main()
