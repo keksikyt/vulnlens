@@ -29,8 +29,13 @@ def query_osv(packages, timeout=20):
         with urlopen(req,timeout=timeout) as response: data=json.loads(response.read().decode())
     except (HTTPError,URLError,TimeoutError,json.JSONDecodeError) as exc:
         raise RuntimeError('OSV lookup failed: '+str(exc)) from exc
+    if not isinstance(data, dict) or not isinstance(data.get('results'), list):
+        raise RuntimeError('OSV lookup returned an invalid response shape')
+    results = data['results']
+    if len(results) != len(packages) or any(not isinstance(item, dict) for item in results):
+        raise RuntimeError('OSV lookup returned an incomplete or invalid batch response')
     findings=[]
-    for package,result in zip(packages,data.get('results',[])):
+    for package,result in zip(packages,results):
         for vuln in result.get('vulns',[]):
             findings.append({'package':package['name'],'version':package['version'],'line':package['line'],
                 'id':vuln.get('id','UNKNOWN'),'aliases':vuln.get('aliases',[]),
