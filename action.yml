@@ -1,0 +1,40 @@
+name: VulnLens Security Scan
+description: Scan a repository for heuristic security findings and generate JSON, SARIF, and HTML reports.
+inputs:
+  scan-path:
+    description: Directory to scan relative to the workspace
+    required: false
+    default: .
+  fail-on:
+    description: CI threshold (critical, high, medium, low, never)
+    required: false
+    default: high
+  version:
+    description: VulnLens git ref to install (tag or commit SHA)
+    required: false
+    default: main
+  sarif-file:
+    description: SARIF output path
+    required: false
+    default: vulnlens.sarif
+  html-file:
+    description: HTML report output path
+    required: false
+    default: vulnlens-report.html
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: Install VulnLens
+      shell: bash
+      run: python -m pip install "git+https://github.com/keksikyt/vulnlens.git@${{ inputs.version }}"
+    - name: Scan repository
+      shell: bash
+      run: |
+        vulnlens "${{ inputs.scan-path }}" \
+          --sarif "${{ inputs.sarif-file }}" \
+          --html "${{ inputs.html-file }}" \
+          --fail-on "${{ inputs.fail-on }}"
