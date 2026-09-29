@@ -5,6 +5,7 @@ import hashlib
 import json
 import re
 from datetime import datetime, timezone
+from .html_report import write_html
 
 VERSION = "0.2.0"
 SKIP = {".git", ".venv", "venv", "__pycache__", "node_modules", "dist", "build", ".tox"}
@@ -29,7 +30,7 @@ def iter_files(root):
     for path in root.rglob("*"):
         if any(part in SKIP for part in path.parts):
             continue
-        if path.is_file():
+        if path.is_file() and not path.is_symlink():
             try:
                 if path.stat().st_size <= MAX_BYTES:
                     yield path
@@ -166,6 +167,8 @@ def main(argv=None):
         Path(args.json_file).write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     if args.sarif:
         Path(args.sarif).write_text(json.dumps(to_sarif(report), indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    if args.html:
+        write_html(report, args.html)
     threshold = SEVERITY.get(args.fail_on, 99)
     new_findings = [f for f in report["findings"] if not f.get("suppressed")]
     return int(args.fail_on != "never" and any(SEVERITY[f["severity"]] <= threshold for f in new_findings))
