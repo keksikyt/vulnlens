@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from vulnlens.cli import apply_baseline, scan, to_sarif, write_baseline
+from vulnlens.cli import apply_baseline, main, scan, to_sarif, write_baseline
 from vulnlens.deps import parse_requirements
 from vulnlens.html_report import render_html
 
@@ -86,6 +86,23 @@ class ScannerTests(unittest.TestCase):
                 [("requests", "2.31.0"), ("django", "4.2.1")],
             )
             self.assertEqual(len(skipped), 1)
+
+    def test_cli_writes_html_report(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            (root / "safe.py").write_text("print('hello')\\n")
+            output = root / "report.html"
+            self.assertEqual(main([str(root), "--html", str(output)]), 0)
+            self.assertTrue(output.is_file())
+            self.assertIn("VulnLens Security Report", output.read_text())
+
+    def test_scanner_skips_symlinked_files(self):
+        with tempfile.TemporaryDirectory() as d, tempfile.TemporaryDirectory() as outside:
+            root = Path(d)
+            secret_file = Path(outside) / "secret.py"
+            secret_file.write_text('API_KEY = "thisIsARealisticSecret12345"\\n')
+            (root / "linked.py").symlink_to(secret_file)
+            self.assertEqual(scan(root)["summary"]["total"], 0)
 
 
 if __name__ == "__main__":
