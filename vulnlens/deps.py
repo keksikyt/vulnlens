@@ -36,12 +36,25 @@ def query_osv(packages, timeout=20):
         raise RuntimeError('OSV lookup returned an incomplete or invalid batch response')
     findings=[]
     for package,result in zip(packages,results):
-        for vuln in result.get('vulns',[]):
+        vulns = result.get('vulns', [])
+        if not isinstance(vulns, list) or any(not isinstance(v, dict) for v in vulns):
+            raise RuntimeError('OSV lookup returned an invalid vulnerability list')
+        for vuln in vulns:
+            aliases = vuln.get('aliases', [])
+            references = vuln.get('references', [])
+            if not isinstance(aliases, list) or any(not isinstance(a, str) for a in aliases):
+                raise RuntimeError('OSV lookup returned invalid vulnerability aliases')
+            if not isinstance(references, list) or any(not isinstance(x, dict) for x in references):
+                raise RuntimeError('OSV lookup returned invalid vulnerability references')
+            summary = vuln.get('summary') or vuln.get('details') or 'No summary provided.'
+            if not isinstance(summary, str):
+                summary = 'No summary provided.'
             findings.append({'package':package['name'],'version':package['version'],'line':package['line'],
-                'id':vuln.get('id','UNKNOWN'),'aliases':vuln.get('aliases',[]),
-                'summary':(vuln.get('summary') or vuln.get('details','No summary provided.'))[:400],
-                'references':[x.get('url') for x in vuln.get('references',[]) if x.get('url')][:5],
-                'modified':vuln.get('modified')})
+                'id':vuln.get('id') if isinstance(vuln.get('id'), str) else 'UNKNOWN',
+                'aliases':aliases,
+                'summary':summary[:400],
+                'references':[x['url'] for x in references if isinstance(x.get('url'), str) and x['url']][:5],
+                'modified':vuln.get('modified') if isinstance(vuln.get('modified'), str) else None})
     return findings
 
 def main(argv=None):
